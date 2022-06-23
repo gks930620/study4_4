@@ -1,0 +1,18 @@
+transaction, security, batch, exceptionHandler,  채팅( websocket)정도 까지는 수업용
+
+
+
+
+context-datasource JDBC TrasactionManger 빈 설정
+
+TransactionTempleate과 TransactionCallback 클래스로 직접 처리하기
+
+선언적 트랜잭션 : tx:advice   vs @Trasactional
+
+
+@Transactional만 할거다. 근데 context-datasource.xml에 tx:annotaion-driven 태그는 추가해야한다.
+
+member regist에서 일부러 insertuserrole 이상하게 해보고 memberInsert해보자.
+
+
+ 

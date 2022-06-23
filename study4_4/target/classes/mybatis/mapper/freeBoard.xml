@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.free.dao.IFreeBoardDao">
+	<!--SqlSession에서 IFreeBoardDao의 구현체를 만드는데 참고되는 파일 FreeBoardDaoOracle을 대신하는 
+		파일 namespace에는 IFreeBoardDao의 풀네임을 작성합니다. -->
+	<!-- ;; 금지 -->
+	<!-- id = 메소드 parameterType= 메소드의 파라미터인데... VO의 경우 안에서 $,# 형태로 씁니다 FreeBoardVO이면 
+		쿼리문에서 where bo_no=#{boNo} EL상관없음. 형태만 비슷함. #=pstmt, $=stmt resultType= 메소드의 
+		return Type인데.. List의 경우 그 안에 담긴 데이터타입을 기입. select결과를 list,set 등으로 알아서 맞춰서 
+		return해줍니다. -->
+
+
+	<!-- mybatis에서 자바 static 메소드사용하기 @클래스이름@메소드이름(파라미터의 필드이름) -->
+
+
+	<sql id="search">
+		<if
+			test="!@org.apache.commons.lang3.StringUtils@isBlank(searchWord)">
+			<choose>
+				<when test='searchType=="T"'> AND bo_title LIKE '%'||#{searchWord}||'%' </when>
+				<when test='searchType=="W"'> AND bo_writer LIKE '%'||#{searchWord}||'%' </when>
+				<when test='searchType=="C"'> AND bo_content LIKE '%'||#{searchWord}||'%' </when>
+			</choose>
+		</if>
+		<if
+			test="!@org.apache.commons.lang3.StringUtils@isBlank(searchCategory)">
+			AND bo_category =#{searchCategory}
+		</if>
+	</sql>
+
+
+	<select id="getTotalRowCount"
+		parameterType="com.study.free.vo.FreeBoardSearchVO" resultType="int">
+		SELECT count(*)
+		FROM free_board
+		WHERE 1=1
+		<include refid="search" />
+
+	</select>
+
+	<select id="getBoardList"
+		resultType="com.study.free.vo.FreeBoardVO"
+		parameterType="com.study.free.vo.FreeBoardSearchVO">
+
+
+		<include refid="common.prePage"></include>
+		SELECT
+		to_char(bo_reg_date,'YYYY-MM-DD') AS bo_reg_date ,
+		to_char(bo_mod_date,'YYYY-MM-DD') AS bo_mod_date ,
+		bo_no , bo_title ,
+		bo_category ,
+		bo_writer , bo_pass , bo_content ,
+		bo_hit ,
+		bo_del_yn ,
+		b.comm_nm AS bo_category_nm
+
+		FROM free_board a
+		,comm_code b
+		WHERE a.bo_category=b.comm_cd
+		<include refid="search" />
+		ORDER by bo_no desc
+		<include refid="common.postPage"></include>
+
+
+	</select>
+ 
+  
+	
+<!-- <resultMap type="com.study.free.vo.FreeBoardVO" id="freeAttaches">
+		<association property="attaches" column="{}"   ></association>
+	</resultMap> -->
+	 
+	<resultMap type="com.study.free.vo.FreeBoardVO" id="freeAttaches">
+		<collection property="attaches" column="{atchParentNo=bo_no, atchCategory=bo_type}" 
+		ofType="com.study.attach.vo.AttachVO" 
+		select="com.study.attach.dao.IAttachDao.getAttachListByParent"> 
+		</collection>
+	</resultMap>
+	<select id="getBoard" parameterType="int"
+		resultType="com.study.free.vo.FreeBoardVO" resultMap="freeAttaches">
+		SELECT
+		'FREE' AS bo_type,
+		to_char(bo_reg_date,'YYYY-MM-DD') AS bo_reg_date ,
+		to_char(bo_mod_date,'YYYY-MM-DD') AS bo_mod_date ,
+		bo_no , bo_title ,
+		bo_category ,
+		bo_writer , bo_pass , bo_content ,
+		bo_hit ,
+		bo_del_yn ,
+		b.comm_nm AS bo_category_nm
+		FROM free_board a
+		,comm_code b
+		WHERE bo_no=#{boNo}
+		AND a.bo_category=b.comm_cd
+	</select>
+
+
+	<update id="increaseHit" parameterType="int">
+		UPDATE free_board SET
+		bo_hit=bo_hit+1
+		WHERE bo_no=#{boNo}
+	</update>
+
+
+	<update id="updateBoard"
+		parameterType="com.study.free.vo.FreeBoardVO">
+		UPDATE free_board SET
+		bo_title=#{boTitle}
+		,bo_category=#{boCategory}
+		,bo_content=#{boContent}
+		,bo_mod_date=sysdate
+		WHERE bo_no=#{boNo}
+	</update>
+
+
+	<update id="deleteBoard"
+		parameterType="com.study.free.vo.FreeBoardVO">
+		UPDATE free_board SET
+		bo_del_yn='Y'
+		WHERE bo_no=#{boNo}
+
+	</update>
+
+	<insert id="insertBoard"
+		parameterType="com.study.free.vo.FreeBoardVO">
+		<selectKey order="BEFORE" keyProperty="boNo"  resultType="int">
+			SELECT seq_free_board.nextval  FROM dual
+		</selectKey>
+		INSERT INTO free_board (
+			    bo_no, bo_title, bo_category
+    , bo_writer , bo_pass, bo_content
+    , bo_hit , bo_reg_date
+    , bo_mod_date , bo_del_yn
+		 ) VALUES(
+		#{boNo}, #{boTitle} ,
+		#{boCategory},
+		#{boWriter}, #{boPass}, #{boContent},
+		 0, sysdate,
+		null, 'N'
+		)
+	</insert>
+
+
+
+
+
+
+
+</mapper>
+
+
+
+
+
+
+
+

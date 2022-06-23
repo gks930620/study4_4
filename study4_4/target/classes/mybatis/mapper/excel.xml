@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.excel.dao.IExcelDao">
+
+	<select id="getBoardList" resultType="com.study.free.vo.FreeBoardVO" parameterType="com.study.free.vo.FreeBoardSearchVO">
+		SELECT
+		to_char(bo_reg_date,'YYYY-MM-DD') AS bo_reg_date ,
+		to_char(bo_mod_date,'YYYY-MM-DD') AS bo_mod_date ,
+		bo_no , bo_title ,
+		bo_category ,
+		bo_writer , bo_pass , bo_content ,
+		bo_hit ,
+		bo_del_yn ,
+		b.comm_nm AS bo_category_nm
+
+		FROM free_board a
+		,comm_code b
+		WHERE a.bo_category=b.comm_cd
+		<include refid="com.study.free.dao.IFreeBoardDao.search" />
+		ORDER by bo_no desc
+	</select>
+	
+
+
+
+</mapper>

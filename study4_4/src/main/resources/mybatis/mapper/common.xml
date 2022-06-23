@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="common">
+<!-- 다른 xml에서 공통적으로 쓰이는 코드를 쓸려는거지
+	IDao랑 연결해서 쓸려는게 아닙니다... 그래서 namesapce에  IDao이름 안씀
+	대신 다른xml에서 사용할때 쓰일 이름
+ -->
+<sql id="prePage">
+SELECT * FROM (
+		SELECT a.* , rownum as rnum FROM (
+</sql>
+<sql id="postPage">
+) a )b
+		WHERE rnum between #{firstRow} and #{lastRow}
+
+</sql>
+
+
+
+
+</mapper>

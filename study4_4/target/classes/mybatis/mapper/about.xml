@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.about.dao.IAboutDao">
+	<select id="getAlcoholList" resultType="com.study.about.vo.AlcoholVO">
+		SELECT al_no
+		     , al_name
+		     , al_percent
+		     , al_category
+		FROM alcohol
+	</select>
+	
+	<select id="getPianoList" resultType="com.study.about.vo.PianoVO">
+		SELECT p_no
+		     , p_title
+		     , p_date
+		     , p_composer
+		     , p_category
+		FROM piano
+	</select>
+
+</mapper>

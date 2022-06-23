@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- namespace : 간단하게 해도 됨. 단, mapper클래스를 사용하려면 완전한 이름의 클래스이름을 지정 -->
+<mapper namespace="com.study.attach.dao.IAttachDao">
+	<insert id="insertAttach" parameterType="com.study.attach.vo.AttachVO">
+		 INSERT INTO attach (
+			      atch_no		 	, atch_parent_no	 , atch_category
+			    , atch_file_name 	, atch_original_name , atch_file_size
+			    , atch_fancy_size	, atch_content_type	 , atch_path
+			    , atch_down_hit	 	, atch_del_yn		 , atch_reg_date
+			) VALUES (
+			<![CDATA[
+				  seq_attach.nextval, #{atchParentNo}	 , #{atchCategory}
+				, #{atchFileName}	, #{atchOriginalName}, #{atchFileSize}
+				, #{atchFancySize}	, #{atchContentType} , #{atchPath}
+				, 0					, 'N'				 , SYSDATE
+			]]>
+			)
+	</insert>
+	
+	<select id="getAttachListByParent" resultType="com.study.attach.vo.AttachVO" parameterType="com.study.attach.vo.AttachVO">
+	   SELECT atch_no
+		    , atch_original_name
+		    , atch_fancy_size
+		    , atch_down_hit
+		    , TO_CHAR(atch_reg_date, 'YYYY.MM.DD') AS atch_reg_date
+		FROM  attach
+	   WHERE  atch_parent_no = #{atchParentNo}
+	     AND  atch_category  = #{atchCategory}
+	     AND  atch_del_yn    = 'N'
+	</select>
+	
+	<select id="getAttach" parameterType="int" resultType="com.study.attach.vo.AttachVO">
+		SELECT atch_no
+		     , atch_file_name
+		     , atch_original_name
+		     , atch_file_size
+		     , atch_content_type
+		     , atch_path
+		FROM attach
+		WHERE atch_no = #{atchNo}
+	</select>
+	
+	<update id="increaseDownHit" parameterType="int">
+		UPDATE attach
+		   SET atch_down_hit = atch_down_hit+1
+		 WHERE atch_no = #{atchNo}
+	</update>
+	
+	
+	
+	<update id="deleteAttaches" parameterType="map">
+	UPDATE attach
+	SET atch_del_yn = 'Y'
+	WHERE 1 = 1 
+	<!-- 파라미터가 배열일때는 parameterType=map이고   배열은 무조건 속성이 array -->
+	<foreach item="delAtchNo" collection="array" open="AND atch_no IN ("
+		close=") " separator=", ">
+		#{delAtchNo}
+	</foreach>
+	</update>
+	
+</mapper>
