@@ -15,7 +15,7 @@
 	<include refid="common.prePage" />
 		SELECT
 		    re_no, re_category, re_parent_no, re_mem_id
-		    , re_content, re_ip
+		    , re_content
 		    , to_char(re_reg_date,'YYYY-MM-DD') AS re_reg_date
 		    , to_char(re_mod_date,'YYYY-MM-DD') AS re_mod_date
 		    , b.mem_name AS re_mem_name

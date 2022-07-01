@@ -9,7 +9,9 @@ public class ReplyVO {
 	private int reParentNo; /* 부모 번호 */
 	private String reMemId; /* 작성자ID */
 	private String reContent; /* 댓글 내용 */
-	private String reIp; /* IP */
+	
+	
+	
 	private String reRegDate; /* 댓글 등록일자 */
 	private String reModDate; /* 댓글 수정일자 */
 	private String reMemName; //이름
@@ -59,13 +61,6 @@ public class ReplyVO {
 		this.reContent = reContent;
 	}
 
-	public String getReIp() {
-		return reIp;
-	}
-
-	public void setReIp(String reIp) {
-		this.reIp = reIp;
-	}
 
 	public String getReRegDate() {
 		return reRegDate;

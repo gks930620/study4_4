@@ -4,6 +4,7 @@ package com.study.attach.web;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,9 +13,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.study.attach.service.IAttachService;
 import com.study.attach.vo.AttachVO;
@@ -28,6 +35,24 @@ public class AttachController {
 	private String uploadPath;
 	@Autowired
 	private IAttachService attachService;
+	
+	
+	//img파일 썸네일 
+	@GetMapping("/attach/showImg.wow")
+	@ResponseBody
+	public ResponseEntity<byte[]> getFile(String fileName,String filePath){	
+		File file=new File(uploadPath+File.separatorChar +filePath,fileName);
+		ResponseEntity<byte[]> result=null;
+		try {
+			HttpHeaders headers=new HttpHeaders();
+			headers.add("Content-Type", Files.probeContentType(file.toPath()));
+			result=new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),headers,HttpStatus.OK );
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 
 	// @PathVariable 사용하여 url상의 경로를 변수에 할당 "/attach/download/25625"
 	@RequestMapping("/attach/download/{atchNo:[0-9]{1,16}}")

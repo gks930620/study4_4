@@ -48,10 +48,7 @@
 						<th>내용</th>
 						<td><textarea rows="10" name="boContent" class="form-control input-sm" readonly="readonly">${freeBoard.boContent }</textarea></td>
 					</tr>
-					<tr>
-						<th>등록자 IP</th>
-						<td>${freeBoard.boIp }</td>
-					</tr>
+				
 					<tr>
 						<th>조회수</th>
 						<td>${freeBoard.boHit }</td>
@@ -72,6 +69,7 @@
 							<div> 파일 ${st.count} <a href="<c:url value='/attach/download/${f.atchNo}' />" target="_blank"> 
 							<span class="glyphicon glyphicon-save" aria-hidden="true"></span> ${f.atchOriginalName}
 							</a> Size : ${f.atchFancySize} Down : ${f.atchDownHit}
+							<img alt="" src="<%=request.getContextPath()%>/attach/showImg.wow?fileName=${f.atchFileName}&filePath=${f.atchPath}" width="50px" height="50px">
 							</div>
 							</c:forEach>
 						</td>
@@ -103,8 +101,7 @@
 					<input type="hidden" name="reParentNo" value="${freeBoard.boNo}">
 					<input type="hidden" name="reCategory" value="FREE">
 					<input type="hidden" name="reMemId" value="${USER_INFO.userId }">
-					<input type="hidden" name="reIp"
-						value="<%=request.getRemoteAddr()%>">
+					
 					
 					<div class="form-group">
 						<label class="col-sm-2  control-label">댓글</label>

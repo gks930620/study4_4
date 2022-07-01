@@ -22,11 +22,11 @@
 	</insert>
 	
 	<select id="getAttachListByParent" resultType="com.study.attach.vo.AttachVO" parameterType="com.study.attach.vo.AttachVO">
-	   SELECT atch_no
-		    , atch_original_name
-		    , atch_fancy_size
-		    , atch_down_hit
-		    , TO_CHAR(atch_reg_date, 'YYYY.MM.DD') AS atch_reg_date
+	   SELECT atch_no          , atch_parent_no      , atch_category
+		     , atch_file_name  , atch_original_name  , atch_file_size
+		     , atch_fancy_size , atch_content_type   , atch_path
+		     , atch_down_hit   , atch_del_yn
+		     , TO_CHAR(atch_reg_date, 'YYYY.MM.DD') AS atch_reg_date
 		FROM  attach
 	   WHERE  atch_parent_no = #{atchParentNo}
 	     AND  atch_category  = #{atchCategory}
@@ -34,15 +34,14 @@
 	</select>
 	
 	<select id="getAttach" parameterType="int" resultType="com.study.attach.vo.AttachVO">
-		SELECT atch_no
-		     , atch_file_name
-		     , atch_original_name
-		     , atch_file_size
-		     , atch_content_type
-		     , atch_path
+		SELECT atch_no          , atch_parent_no      , atch_category
+		     , atch_file_name  , atch_original_name  , atch_file_size
+		     , atch_fancy_size , atch_content_type   , atch_path
+		     , atch_down_hit   , atch_del_yn
+		     , TO_CHAR(atch_reg_date, 'YYYY.MM.DD') AS atch_reg_date
 		FROM attach
 		WHERE atch_no = #{atchNo}
-	</select>
+	</select> 
 	
 	<update id="increaseDownHit" parameterType="int">
 		UPDATE attach
